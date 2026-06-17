@@ -100,7 +100,7 @@ adb shell settings get global show_temperature_warning
 | `com.nook.partner` warning dialog (48°C / 8°C) | **Removed** |
 | `com.nook.partner` soft shutdown (50°C / 5°C) | **Removed** |
 | SystemUI custom warning dialog | **Removed** |
-| Android `BatteryService` shutdown (50°C / 5°C) | **Still active** (confirmed via logcat) |
+| Android `BatteryService` shutdown (50°C / 5°C) | **Still active** (confirmed via live shutdown test 2026-06-17) |
 | Kernel CPU/GPU throttle (65°C–105°C passive) | **Still active** (confirmed via sysfs) |
 | Kernel CPU/GPU hard shutdown (110°C critical) | **Still active** (confirmed via sysfs) |
 
