@@ -51,6 +51,15 @@ adb shell settings get global show_temperature_warning
 # Should output: 0
 ```
 
+> **Tested:** Verified on bnrv1300 (Android 8.1, Magisk 24.2) — 2026-06-17.
+> All checks above confirmed post-reboot via `scripts/verify_modules.sh`.
+>
+> Note: `service.sh` sets `show_temperature_warning` in a background subshell
+> that polls until the Settings provider is ready. On this device the provider
+> is not reliably available at Magisk's late-start service time, so the value
+> is written a few seconds after the boot animation finishes rather than
+> immediately at boot.
+
 ## Safety note
 
 | Protection layer | Status after this tweak |

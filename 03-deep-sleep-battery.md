@@ -111,6 +111,12 @@ adb shell logcat -s KOReader:I
 # KOReader: KRP: settings set returned ok
 ```
 
+> **Tested (module install):** Verified on bnrv1300 (Android 8.1, Magisk 24.2) — 2026-06-17.
+> The `nook_gl4plus_keyremap` module installs successfully and Magisk confirms
+> it mounts the overlay at boot (`nook_gl4plus_keyremap: loading mount files`).
+> Full end-to-end verification (button wake + page turn behaviour) requires
+> KOReader with the deep sleep patch applied.
+
 ## Notes
 
 - **AutoWarmth conflict:** KOReader's AutoWarmth plugin can interfere with warmth

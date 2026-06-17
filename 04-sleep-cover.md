@@ -48,6 +48,11 @@ adb shell su -c 'grep -rl KOReader /proc/*/cmdline 2>/dev/null'
 
 Lock the screen and confirm your book cover now appears as the sleep image.
 
+> **Tested (module install):** Verified on bnrv1300 (Android 8.1, Magisk 24.2) — 2026-06-17.
+> The `sleep_cover` module installs successfully, `service.sh` runs at boot, and
+> Magisk reports no errors. Full end-to-end verification (cover image updating on
+> screen-off) requires KOReader to be open with a book loaded.
+
 ## Note on slide-to-unlock
 
 An earlier version of this module also suppressed the Nook's slide-to-unlock

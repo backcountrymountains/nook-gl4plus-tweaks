@@ -47,6 +47,15 @@ adb shell cat /sdcard/ota_server.conf
 # Should output: http://127.0.0.1/
 ```
 
+> **Tested:** Verified on bnrv1300 (Android 8.1, Magisk 24.2) — 2026-06-17.
+> All checks above confirmed post-reboot via `scripts/verify_modules.sh`.
+>
+> Note: `service.sh` writes `ota_server.conf` in a background subshell that
+> polls until `/sdcard` is mounted. On this device `/sdcard` (FUSE) is not
+> available at Magisk's late-start service time (~11s before `boot_complete`),
+> so the file appears a few seconds after the boot animation finishes — not
+> immediately at boot.
+
 ---
 
 ## Manual install via ADB (advanced / for reference)
