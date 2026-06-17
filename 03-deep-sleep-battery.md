@@ -117,6 +117,24 @@ adb shell logcat -s KOReader:I
 > Full end-to-end verification (button wake + page turn behaviour) requires
 > KOReader with the deep sleep patch applied.
 
+## Measured battery life
+
+Test run 2026-06-03 — fully unplugged, KOReader deep sleep + RTC wakeup, 1 page/minute.
+
+![Battery drain chart](https://raw.githubusercontent.com/backcountrymountains/nook-gl4plus-deepsleep/master/analysis/battery_drain_test_2026-06-03.png)
+
+| Metric | Value |
+|--------|-------|
+| Duration (unplugged) | 11.1 hours |
+| Page turns completed | 640 |
+| Battery drain | 100% → 89% (−11%) |
+| Drain rate | ~1% / hour |
+| Voltage drop | 4381 mV → 4240 mV (−141 mV) |
+| Avg discharge current | ~163 mA |
+
+At ~1%/hour, a full charge gives approximately **100 hours of reading** at 1 page/minute.
+The backlight was off during this test; enabling it will increase drain.
+
 ## Notes
 
 - **AutoWarmth conflict:** KOReader's AutoWarmth plugin can interfere with warmth
