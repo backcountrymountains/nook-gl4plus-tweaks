@@ -2,28 +2,28 @@
 
 > **USE AT YOUR OWN RISK.**
 >
-> This tweak removes **two** temperature protection layers built into the Nook
-> firmware:
+> This tweak removes the **48°C warning dialog** (and 8°C cold warning) that
+> prompts you to let the device cool down. Without it, the device will not alert
+> you when it reaches that temperature.
 >
-> - The **warning dialog at 48°C** (and 8°C low) that prompts you to let the
->   device cool down.
-> - The **automatic shutdown at 50°C** (and 5°C low) that the `com.nook.partner`
->   service would otherwise trigger.
+> The **automatic shutdown at 50°C** is handled by two independent layers —
+> `com.nook.partner`'s `StatusBarService` and Android's `BatteryService`. This
+> tweak disables the `StatusBarService` layer, but **Android's `BatteryService`
+> still shuts the device down at 50°C** (confirmed from device logcat). The 50°C
+> shutdown protection therefore remains in place.
 >
-> After installing this tweak, **neither of these will fire.** The device will not
-> warn you and will not shut itself down at these thresholds.
+> In addition, the kernel thermal governor triggers CPU/GPU throttling from 65°C
+> and a hard shutdown at 110°C (confirmed from
+> `/sys/class/thermal/thermal_zone*/trip_point_*_temp`). These are unaffected by
+> this tweak.
 >
-> Two independent protection layers do remain active: the Android framework's
-> `BatteryService` thermal shutdown and the kernel thermal governor / hardware
-> over-current protection. However, **their exact shutdown temperatures are not
-> publicly documented for this device** and are likely higher than 50°C. Do not
-> rely on them as a substitute for the removed protections.
+> In summary: **you lose the 48°C warning dialog. The 50°C shutdown and all
+> hardware-level protections remain active.**
 >
 > **Do not use this tweak if your device is in a hot environment, in direct
-> sunlight, or in a confined space where heat cannot dissipate.** If the device
-> feels unusually hot to the touch, stop using it and let it cool down — you will
-> no longer receive an on-screen warning or automatic shutdown to prompt you to
-> do so.
+> sunlight, or in a confined space where heat cannot dissipate.** You will no
+> longer receive the on-screen warning at 48°C that would otherwise prompt you to
+> cool the device down before reaching the shutdown threshold.
 >
 > This tweak requires **root access** and modifies system-level settings. Incorrect
 > installation or use on an unsupported device may cause unexpected behaviour,
@@ -100,8 +100,9 @@ adb shell settings get global show_temperature_warning
 | `com.nook.partner` warning dialog (48°C / 8°C) | **Removed** |
 | `com.nook.partner` soft shutdown (50°C / 5°C) | **Removed** |
 | SystemUI custom warning dialog | **Removed** |
-| Android `BatteryService` thermal shutdown | Still active (threshold undocumented) |
-| Kernel thermal governor / hardware OCP | Still active (threshold undocumented) |
+| Android `BatteryService` shutdown (50°C / 5°C) | **Still active** (confirmed via logcat) |
+| Kernel CPU/GPU throttle (65°C–105°C passive) | **Still active** (confirmed via sysfs) |
+| Kernel CPU/GPU hard shutdown (110°C critical) | **Still active** (confirmed via sysfs) |
 
 ---
 
