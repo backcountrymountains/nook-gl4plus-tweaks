@@ -1,0 +1,48 @@
+# This file shows only the vendor-specific section at the bottom of
+# /system/usr/keylayout/Generic.kl on the Nook Glowlight 4 Plus (bnrv1300).
+# The rest of Generic.kl is the standard Android generic key layout and is
+# unchanged. Only this E70P74 section needs to be modified.
+#
+# See README.md for full instructions including backup steps.
+
+# ── PHYSICAL BUTTON LAYOUT ───────────────────────────────────────────────────
+# The device has four physical buttons: two on the left edge and two on the
+# right edge, paired top and bottom. The top-left and top-right buttons share
+# the same function (page back), as do the bottom-left and bottom-right
+# (page forward). This lets either hand activate the buttons when holding
+# the device one-handed.
+#
+#   Left edge    Right edge
+#   ─────────    ──────────
+#   [scan 191]   [scan 192]   ← top pair   → page back
+#   [scan 193]   [scan 194]   ← bottom pair → page forward
+
+
+# ── FACTORY ORIGINAL (from Generic.bak) ──────────────────────────────────────
+# The factory firmware maps the buttons to F9–F12. These are not Android wake
+# keys, so this mapping works fine for the stock B&N app (which uses shallow
+# idle sleep, not AllWinner deep sleep). They cannot wake the device from
+# power_enhance_enable deep sleep because PhoneWindowManager silently drops
+# non-wake-key events when mWakefulness=Asleep.
+#
+# # E70P74 define
+# key 102   HOME
+# key 191   F10
+# key 192   F11
+# key 193   F9
+# key 194   F12
+
+
+# ── REQUIRED MODIFICATION ─────────────────────────────────────────────────────
+# Replace the E70P74 section with the following. BACK (191/192) and MENU
+# (193/194) are both hardcoded wake keys in Android's PhoneWindowManager,
+# meaning they can wake the device from AllWinner deep sleep. VOLUME_DOWN
+# (the intermediate mapping tried before MENU) is not a wake key and is
+# silently dropped when mWakefulness=Asleep.
+
+# E70P74 define
+key 102   HOME
+key 191   BACK
+key 192   BACK
+key 193   MENU
+key 194   MENU
