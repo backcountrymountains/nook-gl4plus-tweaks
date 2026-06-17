@@ -2,15 +2,28 @@
 
 > **USE AT YOUR OWN RISK.**
 >
-> This tweak removes the temperature warning dialogs that appear when the device
-> reaches 48°C. The hardware thermal shutdown (triggered at a higher threshold by
-> Android's `BatteryService`) remains active, but **you are removing a layer of
-> protection** that would otherwise notify you of an overheating device.
+> This tweak removes **two** temperature protection layers built into the Nook
+> firmware:
+>
+> - The **warning dialog at 48°C** (and 8°C low) that prompts you to let the
+>   device cool down.
+> - The **automatic shutdown at 50°C** (and 5°C low) that the `com.nook.partner`
+>   service would otherwise trigger.
+>
+> After installing this tweak, **neither of these will fire.** The device will not
+> warn you and will not shut itself down at these thresholds.
+>
+> Two independent protection layers do remain active: the Android framework's
+> `BatteryService` thermal shutdown and the kernel thermal governor / hardware
+> over-current protection. However, **their exact shutdown temperatures are not
+> publicly documented for this device** and are likely higher than 50°C. Do not
+> rely on them as a substitute for the removed protections.
 >
 > **Do not use this tweak if your device is in a hot environment, in direct
 > sunlight, or in a confined space where heat cannot dissipate.** If the device
 > feels unusually hot to the touch, stop using it and let it cool down — you will
-> no longer receive an on-screen warning to prompt you to do so.
+> no longer receive an on-screen warning or automatic shutdown to prompt you to
+> do so.
 >
 > This tweak requires **root access** and modifies system-level settings. Incorrect
 > installation or use on an unsupported device may cause unexpected behaviour,
@@ -84,10 +97,11 @@ adb shell settings get global show_temperature_warning
 
 | Protection layer | Status after this tweak |
 |---|---|
-| `com.nook.partner` warning dialog (48°C / 8°C) | Removed |
-| SystemUI custom warning dialog | Removed |
-| Android `BatteryService` thermal shutdown | **Still active** |
-| Kernel thermal governor / hardware OCP | **Still active** |
+| `com.nook.partner` warning dialog (48°C / 8°C) | **Removed** |
+| `com.nook.partner` soft shutdown (50°C / 5°C) | **Removed** |
+| SystemUI custom warning dialog | **Removed** |
+| Android `BatteryService` thermal shutdown | Still active (threshold undocumented) |
+| Kernel thermal governor / hardware OCP | Still active (threshold undocumented) |
 
 ---
 
