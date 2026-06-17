@@ -32,8 +32,8 @@ to be installed.
 
 | # | Tweak | Requires | What it fixes |
 |---|---|---|---|
-| [01](01-block-ota-updates.md) | Block OTA firmware updates | Root | Prevents B&N from pushing updates that undo your customizations |
-| [02](02-suppress-temperature-warnings.md) | Suppress temperature warnings | Root | Eliminates false-positive temperature dialogs in warm environments |
+| [01](01-block-ota-updates.md) | Block OTA firmware updates | Root + Magisk | Prevents B&N from pushing updates that undo your customizations |
+| [02](02-suppress-temperature-warnings.md) | Suppress temperature warnings | Root + Magisk | Eliminates false-positive temperature dialogs in warm environments |
 | [03](03-deep-sleep-battery.md) | Deep sleep between pages | Root + KOReader + WRITE_SETTINGS | Extends battery life from hours to days while reading |
 | [04](04-sleep-cover.md) | Sleep cover from KOReader | Root + Magisk | Shows your current book cover on the sleep screen instead of stock B&N art |
 
@@ -43,6 +43,8 @@ to be installed.
 
 ```
 files/
+  nook-gl4plus-block-ota-v1.zip        ← Magisk zip: block OTA updates (tweak 01)
+  nook-gl4plus-suppress-temp-v1.zip    ← Magisk zip: suppress temp warnings (tweak 02)
   patches/
     nook-gl4plus-keyremap-v1.zip       ← Magisk zip: button keyremap (tweak 03)
     2111-nook-gl4plus-deepsleep.lua    ← KOReader deep sleep patch (tweak 03)

@@ -1,41 +1,45 @@
 # Tweak 02 — Suppress Temperature Warning Dialogs
 
-**Requires:** Root
+**Requires:** Root + Magisk
 
 ## The problem
 
-The Nook shows a modal "temperature warning" dialog when the battery reaches 48°C.
-On the GL4 Plus this threshold is conservative enough that it can trigger in a warm
-room or during extended reading sessions, interrupting what you're doing with a
-dialog you have to dismiss before you can continue.
+The Nook shows a modal temperature warning dialog at 48°C. On the GL4 Plus this
+threshold is conservative enough to trigger in a warm room or during extended
+reading sessions, interrupting what you're doing with a dialog you have to dismiss.
 
 There are two independent warning implementations on this device — one in
-`com.nook.partner` and one in the system UI — so you need to suppress both.
+`com.nook.partner` and one in the system UI — so both need to be suppressed.
 
 ## The fix
 
-1. Disable `StatusBarService` (the `com.nook.partner` warning layer).
-2. Set `show_temperature_warning = 0` (suppresses the SystemUI warning layer).
+Applied on every boot:
 
-Disabling `StatusBarService` removes the B&N temperature dialog but does **not**
-affect `GlowLightService` (the warmth control service) — warmth continues to work
-after this change.
+1. **Disable `StatusBarService`** — removes the `com.nook.partner` warning layer.
+2. **Set `show_temperature_warning = 0`** — suppresses the SystemUI warning layer.
+
+Disabling `StatusBarService` does **not** affect `GlowLightService` (warmth
+control) — they are separate services within the same package and warmth continues
+to work after this change.
 
 The Android framework's own thermal protection (hardware shutdown at 50°C) remains
-fully active regardless. This tweak only removes the early-warning dialogs, not the
-final safety shutdowns.
+fully active. This tweak only removes the early-warning dialogs.
 
-## Steps
+## Install via Magisk app (recommended)
 
-```sh
-adb shell su -c 'pm disable com.nook.partner/.statusbar.StatusBarService'
-adb shell su -c 'am force-stop com.nook.partner'
-adb shell settings put global show_temperature_warning 0
-```
+1. Transfer `files/nook-gl4plus-suppress-temp-v1.zip` to the device.
+2. Open the **Magisk** app on the device.
+3. Tap **Modules** → **Install from storage**.
+4. Select `nook-gl4plus-suppress-temp-v1.zip`.
+5. Reboot when prompted.
 
-The `settings put` change persists in the Settings database across reboots. If you
-use the `sleep_cover` Magisk module (tweak 04), it also re-applies this setting on
-every boot as a safety net in case of factory reset.
+The module's `service.sh` runs as root after every boot and re-applies all three
+steps, so they survive factory resets and reboots.
+
+To uninstall: disable or remove the module in the Magisk app and reboot. The
+`pm disable` change to `StatusBarService` persists in the package database — if
+you want to fully restore temperature warnings after removing the module, also run
+the `pm enable` command in the manual section below.
 
 ## Verify
 
@@ -47,13 +51,6 @@ adb shell settings get global show_temperature_warning
 # Should output: 0
 ```
 
-## Undo
-
-```sh
-adb shell su -c 'pm enable com.nook.partner/.statusbar.StatusBarService'
-adb shell settings put global show_temperature_warning 1
-```
-
 ## Safety note
 
 | Protection layer | Status after this tweak |
@@ -63,4 +60,22 @@ adb shell settings put global show_temperature_warning 1
 | Android `BatteryService` thermal shutdown | **Still active** |
 | Kernel thermal governor / hardware OCP | **Still active** |
 
-The device will still shut down safely at dangerous temperatures.
+---
+
+## Manual install via ADB (advanced / for reference)
+
+These steps are preserved for reference if you need to apply the changes without
+the Magisk app, or want to understand exactly what the module does.
+
+```sh
+adb shell su -c 'pm disable com.nook.partner/.statusbar.StatusBarService'
+adb shell su -c 'am force-stop com.nook.partner'
+adb shell settings put global show_temperature_warning 0
+```
+
+### To undo (ADB)
+
+```sh
+adb shell su -c 'pm enable com.nook.partner/.statusbar.StatusBarService'
+adb shell settings put global show_temperature_warning 1
+```
