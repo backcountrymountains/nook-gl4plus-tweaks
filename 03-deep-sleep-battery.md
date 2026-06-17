@@ -39,28 +39,39 @@ read-write, write the new keymap, and remount it read-only again.
 
 ### Step 1 — Remap buttons in Generic.kl (requires root)
 
-The script `files/patches/install_generic_kl.sh` handles this. It backs up the
-original file on the device before making any changes.
+**Recommended: install the Magisk module zip**
+
+`files/patches/nook-gl4plus-keyremap-v1.zip` is a Magisk module that overlays the
+patched keymap onto `/system/usr/keylayout/Generic.kl` systemlessly — the real
+`/system` partition is never touched. Install it via the Magisk app:
+
+1. Open the **Magisk** app on the device.
+2. Tap **Modules** → **Install from storage**.
+3. Navigate to and select `nook-gl4plus-keyremap-v1.zip`.
+4. Reboot when prompted.
+
+To uninstall: disable or remove the module in the Magisk app and reboot. The
+original keymap is automatically restored.
+
+**Alternative: ADB script**
+
+If you prefer not to use the Magisk app, `files/patches/install_generic_kl.sh`
+patches `/system` directly via ADB:
 
 ```sh
 bash files/patches/install_generic_kl.sh
-```
-
-Then reboot for the keymap change to take effect:
-
-```sh
 adb reboot
 ```
 
-To restore the original keymap at any time:
+To restore the original:
 
 ```sh
 bash files/patches/install_generic_kl.sh --restore
 adb reboot
 ```
 
-`files/patches/Generic.kl.vendor-section` documents the factory button layout and
-the patched layout side-by-side for reference.
+`files/patches/Generic.kl.vendor-section` documents the factory and patched button
+layouts side-by-side for reference.
 
 ### Step 2 — Grant KOReader "Modify system settings"
 
