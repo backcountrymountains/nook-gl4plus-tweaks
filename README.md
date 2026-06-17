@@ -44,9 +44,13 @@ to be installed.
 ```
 files/
   patches/
-    2111-nook-gl4plus-deepsleep.lua   ← deep sleep KOReader patch (tweak 03)
+    nook-gl4plus-keyremap-v1.zip       ← Magisk zip: button keyremap (tweak 03)
+    2111-nook-gl4plus-deepsleep.lua    ← KOReader deep sleep patch (tweak 03)
+    install_generic_kl.sh              ← ADB alternative for keyremap (tweak 03)
+    Generic.kl.vendor-section          ← button layout reference (tweak 03)
   sleep_cover/
-    module.prop                        ← Magisk module files (tweak 04)
+    nook-gl4plus-sleep-cover-v1.zip    ← Magisk zip: sleep cover module (tweak 04)
+    module.prop                        ← individual module files for ADB install
     service.sh
     cover_watcher.sh
     cover_handler.sh
