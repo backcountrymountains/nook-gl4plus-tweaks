@@ -1,5 +1,25 @@
 # Tweak 02 — Suppress Temperature Warning Dialogs
 
+> **USE AT YOUR OWN RISK.**
+>
+> This tweak removes the temperature warning dialogs that appear when the device
+> reaches 48°C. The hardware thermal shutdown (triggered at a higher threshold by
+> Android's `BatteryService`) remains active, but **you are removing a layer of
+> protection** that would otherwise notify you of an overheating device.
+>
+> **Do not use this tweak if your device is in a hot environment, in direct
+> sunlight, or in a confined space where heat cannot dissipate.** If the device
+> feels unusually hot to the touch, stop using it and let it cool down — you will
+> no longer receive an on-screen warning to prompt you to do so.
+>
+> This tweak requires **root access** and modifies system-level settings. Incorrect
+> installation or use on an unsupported device may cause unexpected behaviour,
+> instability, or other issues.
+>
+> **The authors of this tweak accept no responsibility for any damage to your
+> device, data loss, shortened hardware lifespan, or any other consequence arising
+> from its use.** You install and use this tweak entirely at your own risk.
+
 **Requires:** Root + Magisk
 
 ## The problem
