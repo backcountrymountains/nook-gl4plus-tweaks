@@ -64,12 +64,22 @@ cat > "$STAGE/service.sh" << 'EOF'
 # All operations are idempotent — safe to re-run.
 
 # Disable OTA update components.
+# pm disable talks directly to PackageManager — available at late-start time.
 pm disable com.nook.partner/.otamanager.OtaIntentService  >/dev/null 2>&1
 pm disable com.nook.partner/.otamanager.SideloadInstaller >/dev/null 2>&1
 pm disable com.nook.partner/.oobe.OobeOtaActivity         >/dev/null 2>&1
 
 # Redirect the OTA server URL to localhost.
-echo 'http://127.0.0.1/' > /sdcard/ota_server.conf
+# /sdcard is a FUSE mount that isn't available at late-start service time;
+# poll in the background until it is writable, then write the file.
+(
+    TRIES=0
+    until [ -w /sdcard ] || [ $TRIES -ge 30 ]; do
+        sleep 2
+        TRIES=$((TRIES + 1))
+    done
+    echo 'http://127.0.0.1/' > /sdcard/ota_server.conf
+) &
 EOF
 
 # customize.sh: auto-extraction defaults files to 0644; fix service.sh to 0755.
@@ -102,11 +112,20 @@ cat > "$STAGE/service.sh" << 'EOF'
 # All operations are idempotent — safe to re-run.
 
 # Disable the nookPartner temperature warning layer.
+# pm/am talk directly to system services — available at late-start time.
 pm disable com.nook.partner/.statusbar.StatusBarService >/dev/null 2>&1
 am force-stop com.nook.partner >/dev/null 2>&1
 
 # Suppress the SystemUI temperature warning layer.
-settings put global show_temperature_warning 0
+# The Settings provider may not be ready at late-start time on this device;
+# poll in the background until the write succeeds.
+(
+    TRIES=0
+    until settings put global show_temperature_warning 0 2>/dev/null || [ $TRIES -ge 30 ]; do
+        sleep 2
+        TRIES=$((TRIES + 1))
+    done
+) &
 EOF
 
 cat > "$STAGE/customize.sh" << 'EOF'
@@ -151,10 +170,32 @@ mkdir -p "$STAGE/META-INF/com/google/android"
 cp "$BUILD/META-INF/com/google/android/update-binary"  "$STAGE/META-INF/com/google/android/"
 cp "$BUILD/META-INF/com/google/android/updater-script" "$STAGE/META-INF/com/google/android/"
 
-# Extract module files from existing zip
-for f in module.prop service.sh cover_watcher.sh cover_handler.sh; do
+# Extract non-service files from existing zip
+for f in module.prop cover_watcher.sh cover_handler.sh; do
     unzip -p "$REPO_ROOT/files/sleep_cover/nook-gl4plus-sleep-cover-v1.zip" "$f" > "$STAGE/$f"
 done
+
+cat > "$STAGE/service.sh" << 'EOF'
+#!/system/bin/sh
+# Run by Magisk on every boot.
+# All event-driven logic lives in cover_watcher.sh (logcat-based, no poll timers).
+
+MODULE_DIR=/data/adb/modules/sleep_cover
+
+# Suppress the SystemUI high-temperature warning dialog.
+# The Settings provider may not be ready at late-start time on this device;
+# poll in the background until the write succeeds.
+(
+    TRIES=0
+    until settings put global show_temperature_warning 0 2>/dev/null || [ $TRIES -ge 30 ]; do
+        sleep 2
+        TRIES=$((TRIES + 1))
+    done
+) &
+
+# Start the event-driven watcher for sleep cover propagation.
+"$MODULE_DIR/cover_watcher.sh" &
+EOF
 
 cat > "$STAGE/customize.sh" << 'EOF'
 set_perm "$MODPATH/service.sh"       root root 0755
